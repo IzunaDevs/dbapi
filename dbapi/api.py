@@ -101,11 +101,13 @@ class DBAPI:
             ),
             json=payload,
             headers=headers)
-        resp = r.json()
-        try:
+        if r is not None:
+            # avoid AttributeError here.
+            resp = r.json()
+            # seems every time the response is not None that
+            # an error occured somewhere and is
+            # returned by the json response.
             raise DBAPIRequestError(resp['error'])
-        except KeyError:
-            pass
 
     async def get_stats(self, bot_id):
         """
