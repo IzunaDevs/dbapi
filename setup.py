@@ -1,8 +1,9 @@
 from setuptools import setup
 
-requirements = []
+# Since v 0.2.0 aiohttp is required.
+requirements = ['aiohttp']
 
-version = '0.1.0'
+version = '0.2.0'
 
 if not version:
     raise RuntimeError('version is not set')

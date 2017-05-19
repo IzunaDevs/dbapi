@@ -9,6 +9,8 @@ Discord Bots API for Discord Bots.
 :license: MIT, see LICENSE for more details.
 
 """
+import aiohttp
+
 
 __all__ = ['DBAPI', 'DBAPIRequestError']
 
@@ -56,9 +58,9 @@ class DBAPI:
     :param api_token: User generated API Token.
     """
     def __init__(self, bot, api_token):
-        # barrow discord.py's aiohttp
-        # ClientSession instance.
-        self.session = bot.http.session
+        # Use the connector set on Discord.py.
+        self.session = aiohttp.ClientSession(
+            connector=bot.http.connector, loop=bot.loop)
         self.token = api_token
 
     def authorize(self):
