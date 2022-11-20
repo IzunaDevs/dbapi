@@ -5,7 +5,7 @@ dbapi
 
 Discord Bots API for Discord Bots.
 
-:copyright: (c) 2017 Decorater
+:copyright: (c) 2017~2022 Decorater
 :license: MIT, see LICENSE for more details.
 
 """
@@ -59,8 +59,9 @@ class DBAPI:
     """
     def __init__(self, bot, api_token):
         # Use the connector set on Discord.py.
-        self.session = aiohttp.ClientSession(
-            connector=bot.http.connector, loop=bot.loop)
+        self.session = None
+        self.connector = bot.http.connector
+        self.loop = bot.loop
         self.token = api_token
 
     def authorize(self):
@@ -72,10 +73,17 @@ class DBAPI:
         headers['Authorization'] = self.token
         return headers
 
+    async def connect(self):
+         self.session = aiohttp.ClientSession(
+            connector=self.connector, loop=self.loop)
+
     async def request(self, route, *args, **kwargs):
         """
         Sends requests to the Discord Bots API.
         """
+        if self.session is None:
+            await connect()
+
         await self.session.request(
             route.method, route.url, *args, **kwargs)
 
